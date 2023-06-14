@@ -1,0 +1,8 @@
+/target
+/invaders
+/invaders.*
+/cpudiag.bin
+/8080emu-first50.c
+/CMakeLists.txt
+/cmake-build-debug
+/.idea
