@@ -89,7 +89,6 @@ impl State8080 {
 }
 
 fn main() {
-
     let mut state = State8080::new();
     state.load_into_memory_at(0, "invaders.h");
     state.load_into_memory_at(0x800, "invaders.g");
@@ -161,7 +160,7 @@ fn emulation_loop(
         }
 
         if state.int_enable == 1 && now.elapsed() >= next_interrupt {
-            // println!("interrupt");
+            println!("interrupt");
             if which_interrupt == 1 {
                 generate_interupt(state, 1);
                 which_interrupt = 2;
@@ -170,8 +169,7 @@ fn emulation_loop(
                 which_interrupt = 1;
             }
             next_interrupt = now.elapsed() + Duration::from_micros(8000);
-        }
-        {
+        } else {
             let mut dis = display.lock().unwrap();
             dis.clone_from_slice(state.memory[0x2400..0x2400 + 256 / 8 * 224].as_ref());
         }
@@ -213,6 +211,7 @@ fn emulation_loop(
             i += 1;
         }
         last_timer = now.elapsed();
+        println!("cycles: {}", cycles)
     }
 }
 
@@ -248,15 +247,20 @@ fn render_loop(_machine_state: Arc<Mutex<MachineState>>, display: Arc<Mutex<[u8;
                             let pixel = byte & 1;
 
                             let color;
-                            if pixel  != 0 {
+                            if pixel != 0 {
                                 color = WHITE;
                             } else {
                                 color = BLACK;
                             }
-                            rectangle(color,
-                            square,
-                            c.transform.trans(224.0*3.0 - ((224 - y) * 3) as f64,256.0*3.0 - (x*8*3 + i*3) as f64),
-                            gl);
+                            rectangle(
+                                color,
+                                square,
+                                c.transform.trans(
+                                    224.0 * 3.0 - ((224 - y) * 3) as f64,
+                                    256.0 * 3.0 - (x * 8 * 3 + i * 3) as f64,
+                                ),
+                                gl,
+                            );
                         }
                     }
                 }
